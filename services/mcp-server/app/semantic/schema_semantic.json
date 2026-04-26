@@ -1,0 +1,96 @@
+{
+  "semantic_layer": {
+    "version": "1.1.0",
+    "mappings": [
+      {
+        "technical_name": "available_quantity",
+        "semantic_name": "stock_disponible",
+        "description": "Unidades físicas disponibles para compromiso comercial, excluyendo almacenes reservados (ALM-RESERVADO)",
+        "type": "decimal"
+      },
+      {
+        "technical_name": "estimated_date",
+        "semantic_name": "fecha_esperada_reposicion",
+        "description": "Fecha en la que el proveedor ha confirmado la entrega de mercancía. Si esta fecha es anterior a hoy, el dato NO es confiable y debe alertarse al usuario",
+        "type": "date"
+      },
+      {
+        "technical_name": "pending_quantity",
+        "semantic_name": "cantidad_pendiente_reposicion",
+        "description": "Unidades comprometidas en la orden de compra que están pendientes de recibir en almacén",
+        "type": "decimal"
+      },
+      {
+        "technical_name": "warehouse",
+        "semantic_name": "almacen",
+        "description": "Identificador del almacén físico. El almacén ALM-RESERVADO está excluido del cálculo de disponibilidad para venta",
+        "type": "string"
+      },
+      {
+        "technical_name": "is_obsolete",
+        "semantic_name": "articulo_obsoleto",
+        "description": "Indica si el artículo está descatalogado. Si es true, el artículo no puede comprometerse para nuevas ventas bajo ninguna circunstancia",
+        "type": "boolean"
+      },
+      {
+        "technical_name": "order_status",
+        "semantic_name": "estado_orden_compra",
+        "description": "Estado actual de la orden: CONFIRMADO=proveedor ha confirmado fecha, PENDIENTE=sin confirmar, TRANSITO=mercancía en camino, SOLICITADO=pedido emitido sin respuesta",
+        "type": "string"
+      },
+      {
+        "technical_name": "description",
+        "semantic_name": "descripcion_articulo",
+        "description": "Nombre comercial legible del artículo tal como aparece en el catálogo de productos",
+        "type": "string"
+      },
+      {
+        "technical_name": "supplier",
+        "semantic_name": "proveedor",
+        "description": "Nombre o código del proveedor responsable de la reposición",
+        "type": "string"
+      },
+      {
+        "technical_name": "total_available",
+        "semantic_name": "stock_total_disponible",
+        "description": "Suma de unidades disponibles en todos los almacenes activos, excluyendo ALM-RESERVADO",
+        "type": "decimal"
+      },
+      {
+        "technical_name": "has_overdue_orders",
+        "semantic_name": "tiene_ordenes_vencidas",
+        "description": "Indica si alguna orden de reposición tiene fecha estimada anterior a hoy. Cuando es true, las fechas de entrega no son fiables y deben verificarse con el proveedor",
+        "type": "boolean"
+      },
+      {
+        "technical_name": "total_pending_future",
+        "semantic_name": "cantidad_reposicion_futura_valida",
+        "description": "Total de unidades en órdenes de reposición con fecha futura válida (confirmadas o en tránsito)",
+        "type": "decimal"
+      },
+      {
+        "technical_name": "STK_ACT_01",
+        "semantic_name": "stock_actual_almacen_principal",
+        "description": "Cantidad física disponible en el almacén principal según el sistema ERP legado",
+        "type": "decimal"
+      },
+      {
+        "technical_name": "PUR_DATE_EXP",
+        "semantic_name": "fecha_esperada_reposicion_erp",
+        "description": "Fecha en la que el proveedor ha confirmado la entrega de mercancía según el sistema ERP legado",
+        "type": "date"
+      },
+      {
+        "technical_name": "CLIENT_ID_ERP",
+        "semantic_name": "id_cliente",
+        "description": "Identificador único del cliente en el sistema ERP central — dato PII, enmascarado por política de privacidad",
+        "type": "integer",
+        "is_pii": true
+      }
+    ],
+    "policies": {
+      "mask_pii": true,
+      "read_only_default": true
+    }
+  }
+}

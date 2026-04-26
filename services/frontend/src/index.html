@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP Stock Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
+</head>
+<body>
+
+  <div class="modal-overlay hidden" id="settings-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Configuración</span>
+        <button class="modal-close" id="close-settings" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field-label" for="api-key-input">API Key</label>
+        <input
+          type="password"
+          id="api-key-input"
+          class="field-input"
+          placeholder="Introduce tu API Key"
+          autocomplete="off"
+        />
+        <p class="field-hint">
+          Se envía como header <code>X-API-Key</code> en cada petición
+          y se persiste en <code>localStorage</code>.
+        </p>
+        <button class="btn btn-primary" id="save-settings">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+
+    <header class="header">
+      <div class="header-left">
+        <div>
+          <div class="logo-title">ERP Stock Assistant</div>
+          <div class="logo-subtitle">Asistente de compromiso de stock</div>
+        </div>
+        <span class="divider-v"></span>
+        <span class="session-badge" id="session-display"></span>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" id="new-session-btn" title="Nueva sesión">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="open-settings-btn" title="Configuración">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="chat-area" id="chat-area">
+      <div class="welcome" id="welcome">
+        <h2 class="welcome-title">¿En qué puedo ayudarte?</h2>
+        <p class="welcome-desc">
+          Consulta disponibilidad de artículos, fechas de entrega estimadas
+          y reposiciones pendientes en el ERP.
+        </p>
+        <div class="suggestions">
+          <button class="suggestion-chip" data-query="¿Cuándo podré entregar 500 unidades del producto ZAP-001?">
+            ¿Cuándo entregar 500 uds de ZAP-001?
+          </button>
+          <button class="suggestion-chip" data-query="¿Cuántas unidades del producto ZAP-001 tengo disponibles para vender ahora mismo?">
+            Stock actual de ZAP-001
+          </button>
+          <button class="suggestion-chip" data-query="¿Hay órdenes de compra pendientes para el artículo HER-002?">
+            Órdenes pendientes de HER-002
+          </button>
+          <button class="suggestion-chip" data-query="Dime toda la información sobre el artículo ACC-452">
+            Información del artículo ACC-452
+          </button>
+        </div>
+      </div>
+
+      <div id="messages-container"></div>
+    </main>
+
+    <footer class="input-area">
+      <div class="input-wrapper">
+        <textarea
+          id="query-input"
+          class="query-input"
+          placeholder="Pregunta sobre stock, artículos o fechas de entrega..."
+          rows="1"
+          aria-label="Consulta"
+        ></textarea>
+        <button class="send-btn" id="send-btn" aria-label="Enviar" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <p class="input-hint">
+        <kbd>Enter</kbd> para enviar &nbsp;·&nbsp; <kbd>Shift + Enter</kbd> para nueva línea
+      </p>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
